@@ -14,13 +14,13 @@ namespace WebRepositoryTemplate
     {
         private List<HttpStatusCode> _acceptableStatusCodes;
         protected static CookieContainer CookieContainer { get; set; } = new();
-        protected static WebProxy ProxyDealer { get; private set; }
-        protected static string BaseRequestUrl { get; private set; }
-        protected static Uri BaseUrl { get; private set; }
+        protected static WebProxy ProxyDealer { get; set; }
+        protected static string BaseProxyRequestUrl { get; set; }
+        protected static Uri ProxyUrl { get; set; }
 
         public async Task<HttpResponseMessage> SendRequestAsync(HttpRequestMessage requestMessage)
         {
-            CheckNullFields();
+            CheckAcceptableStatusCodes();
             var netClient = CreateClient();
             Activity.Current = null;
 
@@ -30,12 +30,10 @@ namespace WebRepositoryTemplate
 
             return responce;
         }
-        private void CheckNullFields()
+        private void CheckAcceptableStatusCodes()
         {
             if (_acceptableStatusCodes == null)
                 throw new AggregateException("You need setup acceptable status codes at first");
-            if (ProxyDealer == null)
-                throw new NullReferenceException("ProxyDealer may not be null");
         }
         private HttpClient CreateClient()
         {
