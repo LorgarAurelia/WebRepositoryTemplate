@@ -6,9 +6,9 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using WebRepositoryTemplate.Exceptions;
 
-namespace NetRepositoryTemplate
+namespace WebRepositoryTemplate
 {
     public class BaseRepository
     {
@@ -26,11 +26,11 @@ namespace NetRepositoryTemplate
 
             using var responce = await netClient.SendAsync(requestMessage);
             if (_acceptableStatusCodes.Contains(responce.StatusCode) == false)
-                throw new Exception();
+                throw new ResponceExceptions(requestMessage, responce);
 
             return responce;
         }
-        private void CheckNullFields() 
+        private void CheckNullFields()
         {
             if (_acceptableStatusCodes == null)
                 throw new AggregateException("You need setup acceptable status codes at first");
@@ -50,7 +50,7 @@ namespace NetRepositoryTemplate
             handler.ServerCertificateCustomValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
             HttpClient client = new(handler);
-            client.DefaultRequestHeaders.Add("W_REST", "poskvin");
+            client.DefaultRequestHeaders.Add("W_REST", "poskvin");//вынести в к отдельному классу.
 
             return client;
         }
