@@ -48,7 +48,6 @@ namespace WebRepositoryTemplate
             handler.ServerCertificateCustomValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
             HttpClient client = new(handler);
-            client.DefaultRequestHeaders.Add("W_REST", "poskvin");//вынести в к отдельному классу.
 
             return client;
         }
