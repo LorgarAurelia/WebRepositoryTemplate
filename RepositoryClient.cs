@@ -10,13 +10,13 @@ using WebRepositoryTemplate.Exceptions;
 
 namespace WebRepositoryTemplate
 {
-    public class BaseRepository
+    public class RepositoryClient
     {
         private List<HttpStatusCode> _acceptableStatusCodes;
-        protected static CookieContainer CookieContainer { get; set; } = new();
-        protected static WebProxy ProxyDealer { get; set; }
-        protected static string BaseProxyRequestUrl { get; set; }
-        protected static Uri ProxyUrl { get; set; }
+        public static CookieContainer CookieContainer { get; set; } = new();
+        public static WebProxy ProxyDealer { get; set; }
+        public static string BaseProxyRequestUrl { get; set; }
+        public static Uri ProxyUrl { get; set; }
 
         public async Task<HttpResponseMessage> SendRequestAsync(HttpRequestMessage requestMessage)
         {
@@ -57,7 +57,15 @@ namespace WebRepositoryTemplate
         {
             _acceptableStatusCodes = acceptableStatusCodes;
         }
-
+        public void SetProxy(string proxyAddress, Uri dealerUrl = null)
+        {
+            ProxyDealer = new WebProxy(proxyAddress);
+            if (dealerUrl != null)
+            {
+                ProxyUrl = dealerUrl;
+                BaseProxyRequestUrl = ProxyUrl.ToString().Replace("start", "");
+            }
+        }
         public CookieCollection GetAllCookies()
         {
             CookieCollection cookieCollection = new CookieCollection();
