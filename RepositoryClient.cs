@@ -15,8 +15,8 @@ namespace WebRepositoryTemplate
         private List<HttpStatusCode> _acceptableStatusCodes;
         public static CookieContainer CookieContainer { get; set; } = new();
         public static WebProxy ProxyDealer { get; set; }
-        public static string BaseProxyRequestUrl { get; set; }
-        public static Uri ProxyUrl { get; set; }
+        public string BaseProxyRequestUrl { get; set; }
+        public Uri ProxyUrl { get; set; }
 
         public async Task<HttpResponseMessage> SendRequestAsync(HttpRequestMessage requestMessage)
         {
