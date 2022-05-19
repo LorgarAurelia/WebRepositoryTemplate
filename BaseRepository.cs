@@ -21,10 +21,12 @@ namespace WebRepositoryTemplate
         public async Task<HttpResponseMessage> SendRequestAsync(HttpRequestMessage requestMessage)
         {
             CheckAcceptableStatusCodes();
+
             var netClient = CreateClient();
             Activity.Current = null;
 
             using var responce = await netClient.SendAsync(requestMessage);
+
             if (_acceptableStatusCodes.Contains(responce.StatusCode) == false)
                 throw new ResponceExceptions(requestMessage, responce);
 
