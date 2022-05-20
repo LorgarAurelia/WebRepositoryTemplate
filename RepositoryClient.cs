@@ -13,8 +13,8 @@ namespace WebRepositoryTemplate
     public class RepositoryClient
     {
         private List<HttpStatusCode> _acceptableStatusCodes;
-        public static CookieContainer CookieContainer { get; set; } = new();
-        public static WebProxy ProxyDealer { get; set; }
+        public CookieContainer CookieContainer { get; set; } = new();
+        public WebProxy ProxyDealer { get; set; }
         public string BaseProxyRequestUrl { get; set; }
         public Uri ProxyUrl { get; set; }
 
