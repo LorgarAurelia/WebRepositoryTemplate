@@ -49,7 +49,7 @@ namespace WebRepositoryTemplate
 
             handler.ServerCertificateCustomValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
-            HttpClient client = new(handler);
+            HttpClient client = new(handler, false);
 
             return client;
         }
