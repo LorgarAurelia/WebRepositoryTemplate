@@ -13,11 +13,22 @@ namespace WebRepositoryTemplate
     public class RepositoryClient
     {
         private List<HttpStatusCode> _acceptableStatusCodes;
+        private bool _isAllowAutoRedirection;
         public CookieContainer CookieContainer { get; set; } = new();
         public WebProxy ProxyDealer { get; set; }
         public string BaseProxyRequestUrl { get; set; }
         public Uri ProxyUrl { get; set; }
 
+        public RepositoryClient(List<HttpStatusCode> acceptableStatusCodes, bool isAllowAutoRedirection)
+        {
+            _acceptableStatusCodes = acceptableStatusCodes;
+            _isAllowAutoRedirection = isAllowAutoRedirection;
+        }
+        public RepositoryClient(List<HttpStatusCode> acceptableStatusCodes)
+        {
+            _acceptableStatusCodes = acceptableStatusCodes;
+            _isAllowAutoRedirection = false;
+        }
         public async Task<HttpResponseMessage> SendRequestAsync(HttpRequestMessage requestMessage)
         {
             CheckAcceptableStatusCodes();
@@ -41,7 +52,7 @@ namespace WebRepositoryTemplate
         {
             var handler = new HttpClientHandler()
             {
-                AllowAutoRedirect = false,
+                AllowAutoRedirect = _isAllowAutoRedirection,
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
                 Proxy = ProxyDealer,
                 CookieContainer = CookieContainer
@@ -52,6 +63,10 @@ namespace WebRepositoryTemplate
             HttpClient client = new(handler, false);
 
             return client;
+        }
+        public void SetAutoRedirection(bool isAllowAutoRedirection)
+        {
+            _isAllowAutoRedirection = isAllowAutoRedirection;
         }
         public void SetAcceptableStatusCodes(List<HttpStatusCode> acceptableStatusCodes)
         {
