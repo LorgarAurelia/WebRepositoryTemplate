@@ -2,9 +2,9 @@
 
 namespace WebRepositoryTemplate.Requests
 {
-    public abstract class BaseRequest : HttpRequestMessage
+    public abstract class DefaultRequest : HttpRequestMessage
     {
-        public BaseRequest(HttpMethod requestMethod, string url) : base(requestMethod, url)
+        public DefaultRequest(HttpMethod requestMethod, string url) : base(requestMethod, url)
         {
             Headers.Add("Accept", "application/json, text/plain, */*");
             Headers.Add("Accept-Encoding", "gzip, deflate");

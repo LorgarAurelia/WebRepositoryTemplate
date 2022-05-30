@@ -2,11 +2,10 @@
 
 namespace WebRepositoryTemplate.Requests
 {
-    public class GetRequestPoiskVin : BaseRequest
+    public class GetRequest : DefaultRequest
     {
-        public GetRequestPoiskVin(string url) : base(HttpMethod.Get, url)
+        public GetRequest(string url) : base(HttpMethod.Get, url)
         {
-            Headers.Add("W_REST", "poskvin");
         }
     }
 }

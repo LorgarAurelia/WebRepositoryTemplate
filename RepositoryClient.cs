@@ -14,7 +14,7 @@ namespace WebRepositoryTemplate
     {
         private List<HttpStatusCode> _acceptableStatusCodes;
         private bool _isAllowAutoRedirection;
-        public CookieContainer CookieContainer { get; set; } = new();
+        public CookieContainer CookieContainer { get; private set; } = new();
         public WebProxy ProxyDealer { get; set; }
         public string BaseProxyRequestUrl { get; set; }
         public Uri ProxyUrl { get; set; }
@@ -36,7 +36,7 @@ namespace WebRepositoryTemplate
             var netClient = CreateClient();
             Activity.Current = null;
 
-            using var responce = await netClient.SendAsync(requestMessage);
+            var responce = await netClient.SendAsync(requestMessage);
 
             if (_acceptableStatusCodes.Contains(responce.StatusCode) == false)
                 throw new ResponceExceptions(requestMessage, responce);
@@ -59,9 +59,9 @@ namespace WebRepositoryTemplate
             };
 
             handler.ServerCertificateCustomValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
-
-            HttpClient client = new(handler, false);
-
+            
+            HttpClient client = new(handler);
+            
             return client;
         }
         public void SetAutoRedirection(bool isAllowAutoRedirection)
@@ -75,11 +75,20 @@ namespace WebRepositoryTemplate
         public void SetProxy(string proxyAddress, Uri dealerUrl = null)
         {
             ProxyDealer = new WebProxy(proxyAddress);
+
             if (dealerUrl != null)
             {
                 ProxyUrl = dealerUrl;
                 BaseProxyRequestUrl = ProxyUrl.ToString().Replace("start", "");
             }
+        }
+        public void SetProxy(string proxyAddress)
+        {
+            ProxyDealer = new(proxyAddress);
+        }
+        public void AddCookieCollectionToContainer(CookieCollection cookies)
+        {
+            CookieContainer.Add(cookies);
         }
         public CookieCollection GetAllCookies()
         {
