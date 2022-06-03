@@ -12,42 +12,26 @@ namespace WebRepositoryTemplate
 {
     public class RepositoryClient
     {
-        private List<HttpStatusCode> _acceptableStatusCodes;
         private bool _isAllowAutoRedirection;
         public CookieContainer CookieContainer { get; private set; } = new();
         public WebProxy ProxyDealer { get; set; }
         public string BaseProxyRequestUrl { get; set; }
         public Uri ProxyUrl { get; set; }
 
-        public RepositoryClient(List<HttpStatusCode> acceptableStatusCodes, bool isAllowAutoRedirection)
+        public RepositoryClient( bool isAllowAutoRedirection = false )
         {
-            _acceptableStatusCodes = acceptableStatusCodes;
             _isAllowAutoRedirection = isAllowAutoRedirection;
-        }
-        public RepositoryClient(List<HttpStatusCode> acceptableStatusCodes)
-        {
-            _acceptableStatusCodes = acceptableStatusCodes;
-            _isAllowAutoRedirection = false;
         }
         public async Task<HttpResponseMessage> SendRequestAsync(HttpRequestMessage requestMessage)
         {
-            CheckAcceptableStatusCodes();
-
             var netClient = CreateClient();
             Activity.Current = null;
 
             var responce = await netClient.SendAsync(requestMessage);
 
-            if (_acceptableStatusCodes.Contains(responce.StatusCode) == false)
-                throw new ResponceExceptions(requestMessage, responce);
-
             return responce;
         }
-        private void CheckAcceptableStatusCodes()
-        {
-            if (_acceptableStatusCodes == null)
-                throw new AggregateException("You need setup acceptable status codes at first");
-        }
+        
         private HttpClient CreateClient()
         {
             var handler = new HttpClientHandler()
@@ -67,10 +51,6 @@ namespace WebRepositoryTemplate
         public void SetAutoRedirection(bool isAllowAutoRedirection)
         {
             _isAllowAutoRedirection = isAllowAutoRedirection;
-        }
-        public void SetAcceptableStatusCodes(List<HttpStatusCode> acceptableStatusCodes)
-        {
-            _acceptableStatusCodes = acceptableStatusCodes;
         }
         public void SetProxy(string proxyAddress, Uri dealerUrl = null)
         {
